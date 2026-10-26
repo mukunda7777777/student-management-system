@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student Management System (SMS) - Modern institutional platform for managing academic records, courses, attendance, grades, fees, and campus notices.">
+  <meta name="theme-color" content="#080C16">
+  <title>Student Management System (SMS) | University Academic Portal</title>
+  
+  <!-- Favicon / Icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app-container">
+  
+  <!-- Sidebar Navigation -->
+  <aside class="app-sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-icon">🎓</div>
+      <div class="brand-text">
+        <h1>SMS Portal</h1>
+        <span id="system-mode-tag">University Cloud</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main Navigation">
+      <div class="nav-section-title">Academic Modules</div>
+      
+      <a class="nav-link active" data-view="dashboard" id="nav-dashboard">
+        <span class="icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+
+      <a class="nav-link" data-view="students" id="nav-students">
+        <span class="icon">👨‍🎓</span>
+        <span>Students</span>
+        <span class="badge-count" id="badge-students-count">0</span>
+      </a>
+
+      <a class="nav-link" data-view="courses" id="nav-courses">
+        <span class="icon">📚</span>
+        <span>Courses & Subjects</span>
+      </a>
+
+      <a class="nav-link" data-view="attendance" id="nav-attendance">
+        <span class="icon">📅</span>
+        <span>Attendance</span>
+      </a>
+
+      <a class="nav-link" data-view="marks" id="nav-marks">
+        <span class="icon">📝</span>
+        <span>Examinations & Grades</span>
+      </a>
+
+      <a class="nav-link" data-view="fees" id="nav-fees">
+        <span class="icon">💳</span>
+        <span>Fee Management</span>
+      </a>
+
+      <a class="nav-link" data-view="notices" id="nav-notices">
+        <span class="icon">📢</span>
+        <span>Campus Notices</span>
+        <span class="badge-count" id="badge-notices-count">0</span>
+      </a>
+
+      <div class="nav-section-title">Portals</div>
+
+      <a class="nav-link" data-view="student-portal" id="nav-student-portal">
+        <span class="icon">👤</span>
+        <span>Student Personal Portal</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-badge">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Current User Profile" class="user-avatar" id="sidebar-user-avatar">
+        <div class="user-info">
+          <div class="name" id="sidebar-user-name">Administrator</div>
+          <div class="role-tag" id="sidebar-user-role">Role: ADMIN</div>
+        </div>
+      </div>
+      <button class="role-switch-btn" id="btn-switch-account" aria-label="Switch User or Role">
+        <span>🔄</span> Switch User / Role
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Layout -->
+  <main class="app-main" id="main-content">
+    
+    <!-- Top Action Bar -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <button class="menu-toggle-btn" id="btn-toggle-sidebar" aria-label="Toggle navigation menu">☰</button>
+        <div class="page-title-box">
+          <h2 id="top-page-title">Executive Dashboard</h2>
+          <p id="top-page-subtitle">Centurion Academic Management System</p>
+        </div>
+      </div>
+
+      <div class="top-bar-right">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-search-input" placeholder="Search students, roll no..." aria-label="Search records">
+        </div>
+
+        <button class="btn btn-secondary btn-sm" id="btn-reset-demo" title="Restore default sample database">
+          <span>🔄</span> Reset Demo Data
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Body Views -->
+    <div class="page-container">
+      
+      <!-- ================= 1. DASHBOARD VIEW ================= -->
+      <section class="view-panel active" id="view-dashboard" aria-label="Executive Dashboard">
+        
+        <!-- Live KPI Metric Cards -->
+        <div class="metrics-grid">
+          <div class="stat-card" style="--stat-accent: #38BDF8; --stat-icon-bg: rgba(56, 189, 248, 0.12);">
+            <div class="stat-icon">👨‍🎓</div>
+            <div class="stat-info">
+              <div class="label">Total Enrolled Students</div>
+              <div class="value" id="kpi-total-students">0</div>
+              <div class="subtext">Active enrollment 2026-27</div>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-accent: #818CF8; --stat-icon-bg: rgba(129, 140, 248, 0.12);">
+            <div class="stat-icon">📚</div>
+            <div class="stat-info">
+              <div class="label">Academic Programs</div>
+              <div class="value" id="kpi-total-courses">0</div>
+              <div class="subtext">UG & PG Degree tracks</div>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-accent: #10B981; --stat-icon-bg: rgba(16, 185, 129, 0.12);">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <div class="label">Tuition Fees Collected</div>
+              <div class="value" id="kpi-total-fees">₹0</div>
+              <div class="subtext" id="kpi-pending-fees">₹0 pending dues</div>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-accent: #F59E0B; --stat-icon-bg: rgba(245, 158, 11, 0.12);">
+            <div class="stat-icon">📅</div>
+            <div class="stat-info">
+              <div class="label">Overall Attendance Rate</div>
+              <div class="value" id="kpi-avg-attendance">92%</div>
+              <div class="subtext">Across all cohorts</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Registrations & Quick Actions -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>⚡</span> Quick Academic Actions</h3>
+          </div>
+          <div style="padding: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="btn-quick-add-student">
+              <span>➕</span> Register New Student
+            </button>
+            <button class="btn btn-secondary" id="btn-quick-mark-attendance">
+              <span>📅</span> Take Today's Attendance
+            </button>
+            <button class="btn btn-secondary" id="btn-quick-record-marks">
+              <span>📝</span> Record Exam Marks
+            </button>
+            <button class="btn btn-secondary" id="btn-quick-record-fee">
+              <span>💳</span> Collect Tuition Fee
+            </button>
+            <button class="btn btn-secondary" id="btn-quick-new-notice">
+              <span>📢</span> Post Campus Notice
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Students Table Preview -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>👨‍🎓</span> Recently Enrolled Students</h3>
+            <button class="btn btn-secondary btn-sm" id="btn-view-all-students">View All</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="dashboard-recent-students-table">
+              <thead>
+                <tr>
+                  <th>Roll No</th>
+                  <th>Student Name</th>
+                  <th>Program / Course</th>
+                  <th>Contact Email</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-recent-students-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= 2. STUDENTS MANAGEMENT VIEW ================= -->
+      <section class="view-panel" id="view-students" aria-label="Student Management">
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>👥</span> Student Directory & Records</h3>
+            <div class="card-actions">
+              <button class="btn btn-primary btn-sm" id="btn-open-add-student">
+                <span>➕</span> Add New Student
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label for="student-course-filter">Filter Course:</label>
+              <select id="student-course-filter" class="select-control">
+                <option value="ALL">All Programs</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="student-status-filter">Status:</label>
+              <select id="student-status-filter" class="select-control">
+                <option value="ALL">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Graduated">Graduated</option>
+                <option value="Suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Roll No</th>
+                  <th>Course & Semester</th>
+                  <th>Phone / Email</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="students-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. COURSES & SUBJECTS VIEW ================= -->
+      <section class="view-panel" id="view-courses" aria-label="Course Curriculum">
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>📚</span> Degree Programs & Curricula</h3>
+            <div class="card-actions">
+              <button class="btn btn-primary btn-sm" id="btn-open-add-course">
+                <span>➕</span> Add Program
+              </button>
+            </div>
+          </div>
+          <div style="padding: 1.5rem;" id="courses-grid" class="notices-grid">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>📖</span> Subject Syllabi & Maximum Marks</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Subject Name</th>
+                  <th>Program</th>
+                  <th>Semester</th>
+                  <th>Max Marks</th>
+                </tr>
+              </thead>
+              <tbody id="subjects-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. ATTENDANCE VIEW ================= -->
+      <section class="view-panel" id="view-attendance" aria-label="Attendance Register">
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>📅</span> Daily Attendance Register</h3>
+            <div class="card-actions">
+              <button class="btn btn-success btn-sm" id="btn-mark-all-present">Mark All Present</button>
+              <button class="btn btn-danger btn-sm" id="btn-mark-all-absent">Mark All Absent</button>
+              <button class="btn btn-primary btn-sm" id="btn-save-attendance">Save Attendance</button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label for="attendance-date">Date:</label>
+              <input type="date" id="attendance-date" class="form-control" style="width: 170px;">
+            </div>
+
+            <div class="filter-group">
+              <label for="attendance-course-select">Program:</label>
+              <select id="attendance-course-select" class="select-control"></select>
+            </div>
+
+            <div class="filter-group">
+              <label for="attendance-subject-select">Subject:</label>
+              <select id="attendance-subject-select" class="select-control"></select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Roll No</th>
+                  <th>Student Name</th>
+                  <th>Course</th>
+                  <th>Cumulative Attendance</th>
+                  <th>Today's Status</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. EXAMINATIONS & MARKS VIEW ================= -->
+      <section class="view-panel" id="view-marks" aria-label="Examinations & Marks">
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>📝</span> Academic Examination Results & Grading</h3>
+            <div class="card-actions">
+              <button class="btn btn-secondary btn-sm" id="btn-print-marks">
+                <span>🖨️</span> Print Mark Sheet
+              </button>
+              <button class="btn btn-primary btn-sm" id="btn-open-record-marks">
+                <span>➕</span> Record Subject Marks
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label for="marks-student-select">Student:</label>
+              <select id="marks-student-select" class="select-control"></select>
+            </div>
+          </div>
+
+          <div class="table-responsive" id="printable-mark-sheet-area">
+            <div class="printable-title" style="display: none; padding: 1.5rem 0 0.5rem; text-align: center;">
+              <h2 style="font-size: 1.4rem;">CENTURION UNIVERSITY OF TECHNOLOGY & MANAGEMENT</h2>
+              <p style="font-size: 0.9rem; color: #444;">Official Examination Grade Card & Academic Transcript</p>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Subject Code</th>
+                  <th>Subject Title</th>
+                  <th>Semester</th>
+                  <th>Marks Scored</th>
+                  <th>Max Marks</th>
+                  <th>Percentage</th>
+                  <th>Letter Grade</th>
+                </tr>
+              </thead>
+              <tbody id="marks-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. FEES VIEW ================= -->
+      <section class="view-panel" id="view-fees" aria-label="Tuition Fees Ledger">
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>💳</span> Tuition Fee Ledgers & Invoices</h3>
+            <div class="card-actions">
+              <button class="btn btn-primary btn-sm" id="btn-open-collect-fee">
+                <span>➕</span> Record Payment
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Receipt #</th>
+                  <th>Roll No</th>
+                  <th>Student Name</th>
+                  <th>Total Fee</th>
+                  <th>Paid Amount</th>
+                  <th>Outstanding Due</th>
+                  <th>Payment Mode</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="fees-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 7. NOTICES VIEW ================= -->
+      <section class="view-panel" id="view-notices" aria-label="Campus Notice Board">
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>📢</span> Institutional Circulars & Campus Announcements</h3>
+            <div class="card-actions">
+              <button class="btn btn-primary btn-sm" id="btn-open-post-notice">
+                <span>➕</span> Publish Notice
+              </button>
+            </div>
+          </div>
+          <div class="notices-grid" id="notices-cards-container">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 8. STUDENT PERSONAL PORTAL VIEW ================= -->
+      <section class="view-panel" id="view-student-portal" aria-label="Student Personal Portal">
+        
+        <!-- Personalized Student Hero Banner -->
+        <div class="student-hero">
+          <div class="student-hero-profile">
+            <img src="" alt="Student Profile Picture" class="hero-avatar" id="portal-hero-avatar">
+            <div class="hero-info">
+              <h2 id="portal-hero-name">Priya Sharma</h2>
+              <div class="hero-badges">
+                <span class="status-pill cyan" id="portal-hero-roll">Roll: CS2024001</span>
+                <span class="status-pill success" id="portal-hero-course">B.Tech CSE - Sem 3</span>
+                <span class="status-pill warning" id="portal-hero-status">Active Scholar</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-primary btn-sm" id="btn-print-portal-transcript">
+              <span>📄</span> Print My Official Marksheet
+            </button>
+          </div>
+        </div>
+
+        <!-- Student Metrics -->
+        <div class="metrics-grid">
+          <div class="stat-card" style="--stat-accent: #10B981;">
+            <div class="stat-icon">📈</div>
+            <div class="stat-info">
+              <div class="label">Aggregate Grade</div>
+              <div class="value" id="portal-stat-cgpa">91.6%</div>
+              <div class="subtext">Letter Grade: Outstanding (O)</div>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-accent: #38BDF8;">
+            <div class="stat-icon">📅</div>
+            <div class="stat-info">
+              <div class="label">My Attendance</div>
+              <div class="value" id="portal-stat-attendance">100%</div>
+              <div class="subtext">Eligible for examinations</div>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-accent: #818CF8;">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <div class="label">Tuition Fee Status</div>
+              <div class="value" id="portal-stat-fee">Paid in Full</div>
+              <div class="subtext" id="portal-stat-due">Balance: ₹0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Marks Breakdown -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>📝</span> My Semester Grade Card</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Subject Code</th>
+                  <th>Subject Name</th>
+                  <th>Semester</th>
+                  <th>Marks Scored</th>
+                  <th>Max Marks</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody id="portal-marks-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Student Fee Ledger -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3><span>💳</span> My Fee Receipts & Installments</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Receipt No</th>
+                  <th>Total Due</th>
+                  <th>Amount Paid</th>
+                  <th>Pending Balance</th>
+                  <th>Payment Date</th>
+                  <th>Mode</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="portal-fees-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ==========================================================================
+     Accessible Native <dialog> Modals (Using modern-web-guidance)
+     closedby="any" with cross-browser fallback
+     ========================================================================== -->
+
+<!-- 1. Add / Edit Student Modal -->
+<dialog id="studentDialog" closedby="any" aria-labelledby="studentDialogTitle">
+  <form id="studentForm" method="dialog">
+    <div class="modal-header">
+      <h3 id="studentDialogTitle">Register New Student</h3>
+      <button type="button" class="modal-close-btn" data-close-dialog="studentDialog" aria-label="Close dialog">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <input type="hidden" id="student-edit-id" value="">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="form-student-roll">Roll Number *</label>
+          <input type="text" id="form-student-roll" class="form-control" placeholder="e.g. CS2024005" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-student-name">Full Name *</label>
+          <input type="text" id="form-student-name" class="form-control" placeholder="e.g. Aditi Patel" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-student-course">Program / Course *</label>
+          <select id="form-student-course" class="form-control" required></select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-student-sem">Current Semester *</label>
+          <input type="number" id="form-student-sem" class="form-control" min="1" max="8" value="1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-student-email">Email Address *</label>
+          <input type="email" id="form-student-email" class="form-control" placeholder="student@campus.edu" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-student-phone">Contact Phone *</label>
+          <input type="tel" id="form-student-phone" class="form-control" placeholder="+91 98765 00000" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-student-gender">Gender</label>
+          <select id="form-student-gender" class="form-control">
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-student-dob">Date of Birth</label>
+          <input type="date" id="form-student-dob" class="form-control" value="2004-01-01">
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-student-address">Residential Address</label>
+          <textarea id="form-student-address" class="form-control" placeholder="Residential Street, City, State"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-close-dialog="studentDialog">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="btn-save-student-submit">Save Student Record</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 2. Record Marks Modal -->
+<dialog id="marksDialog" closedby="any" aria-labelledby="marksDialogTitle">
+  <form id="marksForm" method="dialog">
+    <div class="modal-header">
+      <h3 id="marksDialogTitle">Record Examination Marks</h3>
+      <button type="button" class="modal-close-btn" data-close-dialog="marksDialog" aria-label="Close dialog">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="form-marks-student">Student *</label>
+          <select id="form-marks-student" class="form-control" required></select>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-marks-subject">Subject *</label>
+          <select id="form-marks-subject" class="form-control" required></select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-marks-obtained">Marks Obtained *</label>
+          <input type="number" id="form-marks-obtained" class="form-control" min="0" max="100" placeholder="e.g. 85" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-marks-max">Maximum Marks *</label>
+          <input type="number" id="form-marks-max" class="form-control" value="100" required readonly>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-marks-exam-type">Examination Term</label>
+          <select id="form-marks-exam-type" class="form-control">
+            <option value="End-Term Exam">End-Term Final Exam</option>
+            <option value="Mid-Term Assessment">Mid-Term Assessment</option>
+            <option value="Practical Lab">Practical / Lab Viva</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-close-dialog="marksDialog">Cancel</button>
+      <button type="submit" class="btn btn-primary">Save Marks</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 3. Record Fee Payment Modal -->
+<dialog id="feeDialog" closedby="any" aria-labelledby="feeDialogTitle">
+  <form id="feeForm" method="dialog">
+    <div class="modal-header">
+      <h3 id="feeDialogTitle">Collect Fee Payment</h3>
+      <button type="button" class="modal-close-btn" data-close-dialog="feeDialog" aria-label="Close dialog">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="form-fee-student">Student *</label>
+          <select id="form-fee-student" class="form-control" required></select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-fee-total">Total Tuition (₹)</label>
+          <input type="number" id="form-fee-total" class="form-control" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="form-fee-pay-amount">Payment Amount (₹) *</label>
+          <input type="number" id="form-fee-pay-amount" class="form-control" min="500" placeholder="e.g. 25000" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-fee-mode">Payment Mode *</label>
+          <select id="form-fee-mode" class="form-control">
+            <option value="UPI / Online">UPI / QR Code</option>
+            <option value="Net Banking">Net Banking</option>
+            <option value="Credit / Debit Card">Credit / Debit Card</option>
+            <option value="Demand Draft">Demand Draft / Bank Cheque</option>
+            <option value="Cash">Cash Deposit</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-close-dialog="feeDialog">Cancel</button>
+      <button type="submit" class="btn btn-primary">Generate Receipt & Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 4. Post Notice Modal -->
+<dialog id="noticeDialog" closedby="any" aria-labelledby="noticeDialogTitle">
+  <form id="noticeForm" method="dialog">
+    <div class="modal-header">
+      <h3 id="noticeDialogTitle">Publish Campus Notice</h3>
+      <button type="button" class="modal-close-btn" data-close-dialog="noticeDialog" aria-label="Close dialog">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="form-notice-title">Notice Headline / Title *</label>
+          <input type="text" id="form-notice-title" class="form-control" placeholder="e.g. Schedule for Campus Placements 2026" required>
+        </div>
+
+        <div class="form-group">
+          <label for="form-notice-category">Category</label>
+          <select id="form-notice-category" class="form-control">
+            <option value="Examination">Examination</option>
+            <option value="Events">Events & Workshops</option>
+            <option value="Finance">Finance & Dues</option>
+            <option value="Holiday">Holiday Notification</option>
+            <option value="General">General Announcement</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="form-notice-priority">Priority</label>
+          <select id="form-notice-priority" class="form-control">
+            <option value="Normal">Normal</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-notice-target">Target Audience</label>
+          <input type="text" id="form-notice-target" class="form-control" value="All Students & Staff">
+        </div>
+
+        <div class="form-group full-width">
+          <label for="form-notice-content">Announcement Body *</label>
+          <textarea id="form-notice-content" class="form-control" rows="4" placeholder="Full details of the announcement..." required></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-close-dialog="noticeDialog">Cancel</button>
+      <button type="submit" class="btn btn-primary">Publish Announcement</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 5. Switch User Account / Role Modal -->
+<dialog id="switchRoleDialog" closedby="any" aria-labelledby="switchRoleDialogTitle">
+  <div class="modal-header">
+    <h3 id="switchRoleDialogTitle">Switch Account / Test Roles</h3>
+    <button type="button" class="modal-close-btn" data-close-dialog="switchRoleDialog" aria-label="Close dialog">✕</button>
+  </div>
+  <div class="modal-body">
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+      Select an account to preview the platform either as an institutional Administrator or an individual Student:
+    </p>
+    
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <button class="btn btn-secondary switch-account-option" data-role="ADMIN" data-username="admin" style="justify-content: flex-start; text-align: left; padding: 0.85rem 1rem;">
+        <span style="font-size: 1.3rem;">🛡️</span>
+        <div>
+          <div style="font-weight: 700; color: #38BDF8;">System Administrator</div>
+          <div style="font-size: 0.75rem; color: var(--text-dim);">Full Admin access to all management modules & reports</div>
+        </div>
+      </button>
+
+      <button class="btn btn-secondary switch-account-option" data-role="STUDENT" data-username="CS2024001" style="justify-content: flex-start; text-align: left; padding: 0.85rem 1rem;">
+        <span style="font-size: 1.3rem;">👩‍🎓</span>
+        <div>
+          <div style="font-weight: 700;">Priya Sharma (Roll: CS2024001)</div>
+          <div style="font-size: 0.75rem; color: var(--text-dim);">B.Tech CSE - 91.6% CGPA - Student Portal View</div>
+        </div>
+      </button>
+
+      <button class="btn btn-secondary switch-account-option" data-role="STUDENT" data-username="CS2024002" style="justify-content: flex-start; text-align: left; padding: 0.85rem 1rem;">
+        <span style="font-size: 1.3rem;">👨‍🎓</span>
+        <div>
+          <div style="font-weight: 700;">Rahul Verma (Roll: CS2024002)</div>
+          <div style="font-size: 0.75rem; color: var(--text-dim);">B.Tech CSE - Pending Fee Balance - Student Portal View</div>
+        </div>
+      </button>
+
+      <button class="btn btn-secondary switch-account-option" data-role="STUDENT" data-username="BCA2024001" style="justify-content: flex-start; text-align: left; padding: 0.85rem 1rem;">
+        <span style="font-size: 1.3rem;">🧑‍🎓</span>
+        <div>
+          <div style="font-weight: 700;">Rohan Das (Roll: BCA2024001)</div>
+          <div style="font-size: 0.75rem; color: var(--text-dim);">BCA - 86.5% CGPA - Student Portal View</div>
+        </div>
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-close-dialog="switchRoleDialog">Cancel</button>
+  </div>
+</dialog>
+
+<!-- Toast Message Container -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- Application Logic Module -->
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
