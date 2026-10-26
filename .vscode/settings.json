@@ -1,0 +1,11 @@
+{
+    "java.project.sourcePaths": [
+        "src/main/java",
+        "src/main/resources"
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic"
+}
